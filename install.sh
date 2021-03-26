@@ -25,7 +25,7 @@ function addHooks {
     y|Y )
       echo "Installing husky and lint-staged packages..."
 
-      eval "npm install -D husky lint-staged"
+      eval "npm install -D husky@4.3.8 lint-staged"
 
       INSERT_HERE=$(( $(wc -l < package.json) - 1 ))
 
