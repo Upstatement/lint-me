@@ -19,13 +19,41 @@ function npmInit {
   fi
 }
 
+function gitInit {
+  if [ -e .git ]; then
+    echo 'Already a git repository'
+  else
+    eval "git init --initial-branch=main"
+    eval "touch .gitignore"
+    echo '/node_modules
+.DS_Store
+' > .gitignore
+  fi
+}
+
 function addHooks {
+  echo ""
   read -p "Do you want to use pre-commit hooks? (y/n) " choice
   case "$choice" in
     y|Y )
+      echo ""
+      echo "Making sure the latest version on npm is installed..."
+
+      eval "npm install -g npm@latest"
+
+      # Initialize git if needed
+      gitInit
+
+      echo ""
       echo "Installing husky and lint-staged packages..."
 
       eval "npm install -D husky lint-staged"
+
+      eval "npm set-script prepare 'husky install' && npm run prepare"
+
+      eval "npm set-script lint-staged 'lint-staged'"
+
+      eval "npx husky add .husky/pre-commit 'npm run lint-staged'"
 
       INSERT_HERE=$(( $(wc -l < package.json) - 1 ))
 
@@ -43,11 +71,6 @@ function addHooks {
       "eslint --fix",
       "git add"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }' >> temp2.txt
 
@@ -70,7 +93,9 @@ function scaffold {
   npmInit
 
   if [ -z "$1" ]; then
-    eval "npm install -D @upstatement/eslint-config @upstatement/prettier-config eslint babel-eslint prettier eslint-config-prettier"
+    eval "npx install-peerdeps --dev @upstatement/eslint-config"
+
+    eval "npm install --save-dev @upstatement/prettier-config"
 
     echo '{
   "extends": "@upstatement",
@@ -85,7 +110,9 @@ function scaffold {
 
   elif [ $1 = four ]; then
 
-    eval "npm install -D @upstatement/eslint-config @upstatement/prettier-config eslint babel-eslint prettier eslint-config-prettier"
+    eval "npx install-peerdeps --dev @upstatement/eslint-config"
+
+    eval "npm install --save-dev @upstatement/prettier-config"
 
     echo '{
   "extends": "@upstatement/eslint-config/four-spaces",
@@ -102,7 +129,9 @@ function scaffold {
 
   elif [ $1 = react ]; then
 
-    eval "npm install -D @upstatement/eslint-config @upstatement/prettier-config eslint babel-eslint prettier eslint-config-prettier eslint-plugin-react eslint-plugin-jsx-a11y"
+    eval "npx install-peerdeps --dev @upstatement/eslint-config"
+
+    eval "npm install --save-dev @upstatement/prettier-config eslint-plugin-react eslint-plugin-jsx-a11y"
 
     echo '{
   "extends": "@upstatement/eslint-config/react"
@@ -110,7 +139,9 @@ function scaffold {
 
   elif [ $1 = vue ]; then
 
-    eval "npm install -D @upstatement/eslint-config @upstatement/prettier-config eslint babel-eslint prettier eslint-config-prettier  eslint-plugin-vue vue-eslint-parser"
+    eval "npx install-peerdeps --dev @upstatement/eslint-config"
+
+    eval "npm install --save-dev @upstatement/prettier-config eslint-plugin-vue vue-eslint-parser"
 
     echo '{
   "extends": "@upstatement/eslint-config/vue"
