@@ -64,12 +64,10 @@ function addHooks {
 
       echo '  "lint-staged": {
     "*.{js,css,json,md}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
     "*.js": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ]
   }
 }' >> temp2.txt
