@@ -98,6 +98,7 @@ function scaffold {
     eval "npm install --save-dev @upstatement/prettier-config"
 
     echo '{
+  "root": true,
   "extends": "@upstatement",
   "parserOptions": {
     "sourceType": "module"
@@ -115,6 +116,7 @@ function scaffold {
     eval "npm install --save-dev @upstatement/prettier-config"
 
     echo '{
+  "root": true,
   "extends": "@upstatement/eslint-config/four-spaces",
   "parserOptions": {
     "sourceType": "module"
@@ -131,11 +133,20 @@ function scaffold {
 
     eval "npx install-peerdeps --dev @upstatement/eslint-config"
 
-    eval "npm install --save-dev @upstatement/prettier-config eslint-plugin-react eslint-plugin-jsx-a11y"
+    eval "npm install --save-dev @upstatement/prettier-config eslint-plugin-react eslint-plugin-jsx-a11y @babel/preset-react"
+
+    eval "touch .babelrc"
 
     echo '{
+  "root": true,
   "extends": "@upstatement/eslint-config/react"
 }' > .eslintrc
+
+    echo '   {
+  "presets": [
+    "@babel/preset-react"
+  ]
+}' > .babelrc
 
   elif [ $1 = vue ]; then
 
@@ -144,6 +155,7 @@ function scaffold {
     eval "npm install --save-dev @upstatement/prettier-config eslint-plugin-vue vue-eslint-parser"
 
     echo '{
+  "root": true,
   "extends": "@upstatement/eslint-config/vue"
 }' > .eslintrc
 
